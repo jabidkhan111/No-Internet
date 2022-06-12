@@ -1,0 +1,51 @@
+
+
+// create popup xml file
+// this code in splash screen
+// manifestfile permission add
+	 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+     <uses-permission android:name="android.permission.INTERNET" />
+
+
+
+public class SplashActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getApplication().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (networkInfo == null || ! networkInfo.isConnected() || !networkInfo.isAvailable()){
+            Dialog dialog = new Dialog(this);
+
+            dialog.setContentView(R.layout.popup);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT,WindowManager.LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().getAttributes().windowAnimations =
+                    android.R.style.Animation_Dialog;
+            dialog.setCancelable(false);
+
+            Button btTryAgain = dialog.findViewById(R.id.btnTryAgain);
+            btTryAgain.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    recreate();
+                }
+            });
+            dialog.show();
+        }else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(SplashActivity.this,MainActivity.class));
+                    finish();
+                }
+            },1500);
+        }
+
+    }
+}
